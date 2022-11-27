@@ -32,9 +32,9 @@ class Concepts_Reminder:
         self.concepts.increase_concept_usage(concept)
         return concept
 
-    def _send_message(self, message: str, time: str):
-        time_hour = int(time.split(":")[0])
-        time_min = int(time.split(":")[1])
+    def _send_message(self, message: str, msg_time: str):
+        time_hour = int(msg_time.split(":")[0])
+        time_min = int(msg_time.split(":")[1])
         w_a.sendwhatmsg(phone_no=self.my_phone_number, message=message, time_hour=time_hour, time_min=time_min)
 
     def set_concept_messaging_frequency(self):
@@ -43,12 +43,15 @@ class Concepts_Reminder:
         # create list of times based on frequency for the next 24 hours
         self.messaging_time = 24
         self.total_no_messages = int(self.messaging_time / self.messaging_frequency_hrs)
-        (datetime.now() + timedelta(hours=0.5)).strftime("%H:%M")
         now = datetime.now()
+        self.message_times.append((now + timedelta(hours=0.05)).strftime("%H:%M"))
         for message_no in range(1, self.total_no_messages):
             delta = message_no*self.messaging_frequency_hrs  # add some extra time for debugging
             message_time = (now + timedelta(hours=delta)).strftime("%H:%M")
             self.message_times.append(message_time)
+        print("Messages will be sent at:")
+        for msg_time in self.message_times:
+            print(msg_time)
 
 
 class Books_Reminder:
