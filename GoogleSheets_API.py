@@ -91,8 +91,8 @@ class Concepts_API(GoogleSheets_API):
             end_req = time.perf_counter()
             elapsed_time = end_req - start_req
             print(self.__request_error_msg(increased_time=elapsed_time * 1.1))
-            self._update_request(row_idx=row_idx, col_idx=col_idx, ws=ws, new_value=new_value, sleep_time=elapsed_time*1.1)
-
+            self._update_request(row_idx=row_idx, col_idx=col_idx, ws=ws, new_value=new_value,
+                                 sleep_time=elapsed_time * 1.1)
 
     def __build_mantras_list(self):
         """
