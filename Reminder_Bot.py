@@ -69,9 +69,9 @@ class EmailReminder(ConceptsReminder):
         super(EmailReminder, self).__init__()
         self._smtp_server: str = "smtp.gmail.com"
         self._port: int = 587
-        self._sender_email: str = "bruno.valverde.bustamante.95@gmail.com"
+        self._sender_email: str = "xxx@yyy.com"
         self._receiver_email: str = self._sender_email
-        self._password: str = "cessna421ER"
+        self._password: str = "xxx"
         self._subject: str = "Your daily friendly reminder"
 
     def _send_message(self, message: str, msg_time: str):
