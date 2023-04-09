@@ -1,19 +1,15 @@
-import pywhatkit as w_a
 import random
 import GoogleSheets_API as gs_api
-import time
 import abc
 from datetime import datetime, timedelta
 import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 
 class ConceptsReminder:
 
     def __init__(self):
         self.message_times = []
-        self.concepts = gs_api.Concepts_API()
+        self.concepts = gs_api.ConceptsAPI()
         self.my_phone_number: str = "+4917662048997"
         self.total_no_messages: int = 0
         self.messaging_time: int = 0
@@ -62,6 +58,7 @@ class WhatsAppReminder(ConceptsReminder):
         super(WhatsAppReminder, self).__init__()
 
     def _send_message(self, message: str, msg_time: str):
+        import pywhatkit as w_a
         time_hour = int(msg_time.split(":")[0])
         time_min = int(msg_time.split(":")[1])
         w_a.sendwhatmsg(phone_no=self.my_phone_number, message=message, time_hour=time_hour, time_min=time_min)
@@ -69,19 +66,26 @@ class WhatsAppReminder(ConceptsReminder):
 
 class EmailReminder(ConceptsReminder):
     def __init__(self):
-        # super(EmailReminder, self).__init__()
-        self._smtp_server = "smtp-mail.outlook.com"
-        self._subject = "SMTP e-mail Test"
-        self._port = 587
-        self._sender_email = "bruno.valverde.95@outlook.es"
-        self._receiver_email = self._sender_email
-        self._password = "cessna421ER"
+        super(EmailReminder, self).__init__()
+        self._smtp_server: str = "smtp.gmail.com"
+        self._port: int = 587
+        self._sender_email: str = "bruno.valverde.bustamante.95@gmail.com"
+        self._receiver_email: str = self._sender_email
+        self._password: str = "cessna421ER"
+        self._subject: str = "Your daily friendly reminder"
 
     def _send_message(self, message: str, msg_time: str):
+        template: str = """From: %s\r\nTo: %s\r\nSubject: %s\r\n\
+
+        %s
+        """ % (self._sender_email, self._receiver_email, self._subject, message)
+        # FIXME: current error OSError: [Errno 101] Network is unreachable. Might be solvable using gmail email provider. Although currently not working here because of authentication error (email and password are correct!!)
+
+        #   s. Traceback very similar to traceback tail in https://www.pythonanywhere.com/forums/topic/27561/
         with smtplib.SMTP(self._smtp_server, self._port) as server:
             server.starttls()
             server.login(self._sender_email, self._password)
-            server.sendmail(from_addr=self._sender_email, to_addrs=self._receiver_email, msg=message)
+            server.sendmail(from_addr=self._sender_email, to_addrs=self._receiver_email, msg=template)
 
 
 class BooksReminder:
@@ -90,6 +94,5 @@ class BooksReminder:
 
 if __name__ == "__main__":
     reminder = EmailReminder()
-    reminder._send_message(message="TEST message", msg_time=None)
     reminder.set_concept_messaging_frequency()
     reminder.start_reminder()

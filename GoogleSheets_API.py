@@ -1,22 +1,25 @@
 import gspread
 from gspread.exceptions import APIError
-from gspread_formatting import *
+from gspread import auth
 import time as time
 from gspread.worksheet import Worksheet
 
 
-class GoogleSheets_API:
+class GoogleSheetsAPI:
     """
     Requests limit
         https://console.cloud.google.com/apis/api/sheets.googleapis.com/quotas?project=personal-projects-360115
     """
+    service_account_path = auth.DEFAULT_SERVICE_ACCOUNT_FILENAME
+    print("Service account path:")
+    print(service_account_path)
     client = gspread.service_account()
     # might be useful: fetch_sheet_metadata() from gspread
     folder_id_personal_development = "1IW5d8UkYEq2FWXgHHEGFPNoGjIM7Gyrl"
     gworkbook_name = ""
 
 
-class Concepts_API(GoogleSheets_API):
+class ConceptsAPI(GoogleSheetsAPI):
     gworkbook_name = "Concepts"
     initial_concepts_sheet_name = "Concepts"
     mantras_sheet_name = "Mantras"
@@ -135,11 +138,11 @@ class Concepts_API(GoogleSheets_API):
         return f"No request error using sleep time: {str(sleep_time)}s"
 
 
-class Books_API(GoogleSheets_API):
+class BooksAPI(GoogleSheetsAPI):
     gworkbook_name = "Books_1"
 
     def __init__(self):
         self.workbook = self.client.open(self.gworkbook_name, folder_id=self.folder_id_personal_development)
         # todo self.workbook.add_worksheet()
 
-# concepts_TEST = Concepts_API()
+# concepts_TEST = ConceptsAPI()
